@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Appointment Cancellation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Base styles */
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* Container and structure */
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            background-color: #f97316;
+            /* Orange for Cancellation */
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content {
+            padding: 30px;
+            line-height: 1.6;
+            color: #333333;
+        }
+
+        /* Details Box */
+        .details-box {
+            background-color: #fff7ed;
+            /* Light orange background */
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f97316;
+            font-size: 1.0em;
+        }
+
+        .details-box p {
+            margin: 5px 0;
+        }
+
+        .details-box strong {
+            color: #c2410c;
+            /* Darker orange for emphasis */
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #eeeeee;
+            color: #666666;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            border-top: 1px solid #dddddd;
+        }
+
+        /* Responsive styles */
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+
+            .container {
+                margin: 10px;
+                border-radius: 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Appointment Canceled</h2>
+        </div>
+        <div class="content">
+            <p>Dear <strong>{{recipientName}}</strong>,</p>
+            <p>Please note that the following appointment has been canceled by <strong>{{cancellingPartyName}}</strong>.
+            </p>
+
+            <div class="details-box">
+                <p><strong>Patient:</strong> {{patientFullName}}</p>
+                <p><strong>Doctor: </strong> Dr. {{doctorName}}</p>
+                <p><strong>Initial Appointment Time: </strong> <strong>{{appointmentTime}}</strong></p>
+                <p><strong>Canceled by:</strong> {{cancellingPartyName}}</p>
+            </div>
+
+            <p>We apologize for any inconvenience. Please use your dashboard to reschedule or contact the other party if
+                necessary.</p>
+            <p>Thank you,<br>The DAT Health Team</p>
+        </div>
+        <div class="footer">
+            &copy; {{currentYear}} DAT Health. All rights reserved.
+        </div>
+    </div>
+</body>
+
+</html>
