@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum Genotype {
+  AA
+  AS
+  SS
+  AC
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+  IN_APP
+}
+
+enum Specialization {
+  GENERAL_PRACTICE
+  PEDIATRICS
+  CARDIOLOGY
+  DERMATOLOGY
+  NEUROLOGY
+  PSYCHIATRY
+  DENTISTRY
+  OPHTHALMOLOGY
+  EMERGENCY_MEDICINE
+}
+
+model User {
+  id                Int                 @id @default(autoincrement())
+  name              String
+  email             String              @unique
+  password          String
+  profilePictureUrl String?
+  roles             Role[]              @relation("UserRoles") // many to many relation
+  doctor            Doctor? // one to one relation
+  patient           Patient? // one to one relation
+  resetCode         PasswordResetCode[] // one to many relation
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@map("users") // specifies the table name
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[] @relation("UserRoles")
+
+  @@map("roles")
+}
+
+model PasswordResetCode {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  used       Boolean  @default(false)
+  expiryDate DateTime
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  @@map("password_reset_codes")
+}
+
+model Doctor {
+  id             Int            @id @default(autoincrement())
+  firstName      String?
+  lastName       String?
+  specialization Specialization
+  licenseNumber  String
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int           @unique
+  appointments Appointment[] // one to many relation
+
+  @@map("doctors")
+}
+
+model Patient {
+  id             Int         @id @default(autoincrement())
+  firstName      String?
+  lastName       String?
+  dateOfBirth    DateTime?
+  phone          String?
+  knownAllergies String?
+  bloodGroup     BloodGroup?
+  genotype       Genotype?
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int           @unique
+  appointments Appointment[] // one to many relation
+
+  @@map("patients")
+}
+
+model Appointment {
+  id                    Int               @id @default(autoincrement())
+  startTime             DateTime
+  endTime               DateTime?
+  meetingLink           String?
+  purposeOfConsultation String?
+  initialSymptoms       String?
+  status                AppointmentStatus @default(SCHEDULED)
+  doctor                Doctor            @relation(fields: [doctorId], references: [id])
+  doctorId              Int
+  patient               Patient           @relation(fields: [patientId], references: [id])
+  patientId             Int
+  consultation          Consultation?
+
+  @@map("appointments")
+}
+
+model Consultation {
+  id                Int         @id @default(autoincrement())
+  consultationDate  DateTime    @default(now())
+  subjectiveNotes   String?
+  objectiveFindings String?
+  assessment        String?
+  plan              String?
+  appointment       Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId     Int         @unique
+
+  @@map("consultations")
+}
+
+model Notification {
+  id        Int              @id @default(autoincrement())
+  subject   String
+  recipient String
+  message   String
+  type      NotificationType
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+}
